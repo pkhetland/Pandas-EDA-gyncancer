@@ -14,11 +14,12 @@ from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 
 external_stylesheets = [
-    "https://codepen.io/chriddyp/pen/bWLwgP.css",
-    "./assets/bootstrap.csv",
+    #"https://codepen.io/chriddyp/pen/bWLwgP.css",
+    dbc.themes.DARKLY,
 ]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.title = 'Gyncancer data EDA'
 
 server = app.server
 
@@ -187,7 +188,7 @@ app.layout = dbc.Container(
         ),
     ],
     fluid=True,
-    style={"width": "100%"},
+    style={"width": "100%"}
 )
 
 if __name__ == "__main__":
