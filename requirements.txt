@@ -1,10 +1,6 @@
-gunicorn
 flask
 dash
 dash-bootstrap-components
-flask-sqlalchemy
-flask_migrate
-flask_script
 pandas
-moesifwsgi
-newrelic
+numpy
+datetime
