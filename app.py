@@ -14,31 +14,74 @@ from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 
 external_stylesheets = [
-    dbc.themes.DARKLY
+    dbc.themes.BOOTSTRAP
 ]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = 'Gyncancer data EDA'
 
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>{%title%}</title>
+        <link href="/assets/_favicon.png" rel="icon" type="image/x-icon">
+        {%css%}
+    </head>
+    <body>
+        <header class="container">
+    </header>
+        <div></div>
+        {%app_entry%}
+        <footer>
+            {%config%}
+            {%scripts%}
+            {%renderer%}
+        </footer>
+        <div></div>
+    </body>
+</html>
+'''
+
+
+PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
+
 server = app.server
 
-navbar = dbc.NavbarSimple(
-    children=[
-        dbc.DropdownMenu(
+dropdown = dbc.DropdownMenu(
             children=[
-                dbc.DropdownMenuItem("All graphs", header=True),
-                dbc.DropdownMenuItem("Activity by division", href="#activity_by_division"),
-                dbc.DropdownMenuItem("Treatment time by division", href="#boxplot"),
+                dbc.DropdownMenuItem("More pages", header=True),
+                dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
+                dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
             ],
             nav=True,
-            in_navbar=True,
-            label="Choose graph",
-        ),
-    ],
-    brand="NavbarSimple",
-    brand_href="#",
-    style={'width': '100%'}
+            in_navbar=False,
+            label="All graphs",
+            direction='left',
+            className="ml-auto flex-nowrap mt-md-0 mr-0"
 )
+
+
+navbar = dbc.Row([dbc.Navbar([
+    dbc.Container([
+        dbc.Row(
+            [
+                dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+                dbc.Col(dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")),
+            ],
+            align="center",
+            no_gutters=False,
+            className='mr-0'
+        ),
+        dropdown,
+    ], fluid=True)
+    ],
+    color='dark',
+    dark=True,
+    className='ml-0 mr-0'
+)])
 
 """ LAYOUT
 """
@@ -57,8 +100,8 @@ app.layout = dbc.Container(
                                     style={"text-align": "center"},
                                 )
                             ],
-                            width=11,
-                            className="mt-5 mb-5",
+                            width=12,
+                            className="mt-5",
                         ),
                         dbc.Col(
                             [
@@ -79,7 +122,7 @@ app.layout = dbc.Container(
                                     )
                                 )
                             ],
-                            className="mt-5 mb-5",
+                            className="mt-5",
                             width=12,
                         ),
                     ],
@@ -94,8 +137,8 @@ app.layout = dbc.Container(
                                     style={"text-align": "center"},
                                 )
                             ],
-                            width=11,
-                            className="mt-5 mb-5",
+                            width=12,
+                            className="mt-5",
                         ),
                         dbc.Col(
                             [
@@ -114,14 +157,14 @@ app.layout = dbc.Container(
                                     )
                                 )
                             ],
-                            className="mt-5 mb-5",
+                            className="mt-2 mb-5",
                             width=12,
                         ),
                     ],
                     width=6,
                 ),
             ],
-            align="center",
+            align="start",
             justify="center",
         ),
         dbc.Row(
@@ -133,7 +176,7 @@ app.layout = dbc.Container(
                             style={"text-align": "center"},
                         )
                     ],
-                    className="mt-5 mb-5",
+                    className="mt-5",
                     id='activity_by_division',
                     width=11,
                 ),
@@ -159,12 +202,12 @@ app.layout = dbc.Container(
                             )
                         )
                     ],
-                    className="mb-5 mt-5",
+                    className="mb-5 mt-2",
                     width=11,
                 ),
             ],
-            align="center",
-            justify="center",
+            align="start",
+            justify="around",
             className="mt-4",
         ),
         dbc.Row(
@@ -177,8 +220,8 @@ app.layout = dbc.Container(
                         )
                     ],
                     width=8,
+                    className="mt-5",
                     id='boxplot',
-                    className="mt-5 mb-5",
                 ),
                 dbc.Col(
                     [
@@ -201,13 +244,12 @@ app.layout = dbc.Container(
                     width=8,
                 ),
             ],
-            align="center",
+            align="start",
             justify="center",
-            className="mt-4",
+            className="mt-4"
         ),
     ],
-    fluid=True,
-    style={"width": "100%"}
+    fluid=True
 )
 
 if __name__ == "__main__":
