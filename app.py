@@ -14,8 +14,7 @@ from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 
 external_stylesheets = [
-    #"https://codepen.io/chriddyp/pen/bWLwgP.css",
-    dbc.themes.DARKLY,
+    dbc.themes.DARKLY
 ]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -23,12 +22,30 @@ app.title = 'Gyncancer data EDA'
 
 server = app.server
 
+navbar = dbc.NavbarSimple(
+    children=[
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem("All graphs", header=True),
+                dbc.DropdownMenuItem("Activity by division", href="#activity_by_division"),
+                dbc.DropdownMenuItem("Treatment time by division", href="#boxplot"),
+            ],
+            nav=True,
+            in_navbar=True,
+            label="Choose graph",
+        ),
+    ],
+    brand="NavbarSimple",
+    brand_href="#",
+    style={'width': '100%'}
+)
 
 """ LAYOUT
 """
 
 app.layout = dbc.Container(
     [
+        navbar,
         dbc.Row(
             [
                 dbc.Col(
@@ -117,6 +134,7 @@ app.layout = dbc.Container(
                         )
                     ],
                     className="mt-5 mb-5",
+                    id='activity_by_division',
                     width=11,
                 ),
                 dbc.Col(
@@ -159,6 +177,7 @@ app.layout = dbc.Container(
                         )
                     ],
                     width=8,
+                    id='boxplot',
                     className="mt-5 mb-5",
                 ),
                 dbc.Col(
