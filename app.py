@@ -32,13 +32,91 @@ app.layout = dbc.Container(
             [
                 dbc.Col(
                     [
+                        dbc.Col(
+                            [
+                                dcc.Markdown(
+                                    "#### `Activity` count over time per `division`, first 36 months",
+                                    style={"text-align": "center"},
+                                )
+                            ],
+                            width=11,
+                            className="mt-5 mb-5",
+                        ),
+                        dbc.Col(
+                            [
+                                dcc.Graph(
+                                    figure=(
+                                        px.histogram(
+                                            pagg,
+                                            x="cancer_type",
+                                            y="event_count",
+                                            labels={
+                                                "event_count": "patients",
+                                                "cancer_type": "Cancer type",
+                                            },
+                                            histfunc="count",
+                                            color_discrete_sequence=["indianred"],
+                                            opacity=0.7
+                                        )
+                                    )
+                                )
+                            ],
+                            className="mt-5 mb-5",
+                            width=12,
+                        ),
+                    ],
+                    width=6,
+                ),
+                dbc.Col(
+                    [
+                        dbc.Col(
+                            [
+                                dcc.Markdown(
+                                    "#### Histogram showing `average treatment time` by `cancer type`",
+                                    style={"text-align": "center"},
+                                )
+                            ],
+                            width=11,
+                            className="mt-5 mb-5",
+                        ),
+                        dbc.Col(
+                            [
+                                dcc.Graph(
+                                    figure=(
+                                        px.histogram(
+                                            pagg,
+                                            x="cancer_type",
+                                            y="treatment_time_months",
+                                            histfunc="avg",
+                                            labels={
+                                                "cancer_type": "Cancer type",
+                                                "treatment_time_months": "treatment time (months)",
+                                            },
+                                        )
+                                    )
+                                )
+                            ],
+                            className="mt-5 mb-5",
+                            width=12,
+                        ),
+                    ],
+                    width=6,
+                ),
+            ],
+            align="center",
+            justify="center",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
                         dcc.Markdown(
                             "#### `Activity count` over time per `division`",
                             style={"text-align": "center"},
                         )
                     ],
                     className="mt-5 mb-5",
-                    width=8,
+                    width=11,
                 ),
                 dbc.Col(
                     [
@@ -57,53 +135,13 @@ app.layout = dbc.Container(
                                     labels={
                                         "activities_count": "unique activities",
                                         "months_passed": "Months passed since day 1",
-                                    },
-                                    title="Unique activities by division over time:",
+                                    }
                                 )
                             )
                         )
                     ],
                     className="mb-5 mt-5",
                     width=11,
-                ),
-            ],
-            align="center",
-            justify="center",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Markdown(
-                            "#### `Activity` count over time per `division`, first 36 months",
-                            style={"text-align": "center"},
-                        )
-                    ],
-                    width=8,
-                    className="mt-5 mb-5",
-                ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            figure=(
-                                px.histogram(
-                                    pagg,
-                                    x="cancer_type",
-                                    y="event_count",
-                                    labels={
-                                        "event_count": "patients",
-                                        "cancer_type": "Cancer type",
-                                    },
-                                    histfunc="count",
-                                    color_discrete_sequence=["indianred"],
-                                    opacity=0.7,
-                                    title="Distribution of cancer types by amount of patients",
-                                )
-                            )
-                        )
-                    ],
-                    className="mt-5 mb-5",
-                    width=8,
                 ),
             ],
             align="center",
@@ -135,41 +173,6 @@ app.layout = dbc.Container(
                                         "treatment_time_months": "Treatment time in months",
                                         "cancer_type": "Cancer type",
                                     },
-                                )
-                            )
-                        )
-                    ],
-                    className="mt-5 mb-5",
-                    width=8,
-                ),
-            ],
-            align="center",
-            justify="center",
-            className="mt-4",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Markdown(
-                            "#### Histogram showing `average treatment time` by `cancer type`",
-                            style={"text-align": "center"},
-                        )
-                    ],
-                    width=8,
-                    className="mt-5 mb-5",
-                ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            figure=(
-                                px.histogram(
-                                    pagg,
-                                    x='cancer_type',
-                                    y='treatment_time_months',
-                                    histfunc='avg',
-                                    labels={'cancer_type': 'Cancer type',
-                                            'treatment_time_months': 'treatment time (months)'}
                                 )
                             )
                         )
