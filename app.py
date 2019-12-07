@@ -274,6 +274,42 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         dcc.Markdown(
+                            "#### `Average number of activities` by `cancer type`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="activity_by_diagnosis",
+                    width=8,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.histogram(
+                                    pagg,
+                                    x='cancer_type',
+                                    y='event_count',
+                                    histfunc='avg',
+                                    labels={'cancer_type': 'Cancer type', 'event_count': 'Number of events'},
+                                    opacity=0.7
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
                             "#### Boxplot showing distribution of `treatment_time` by `cancer_type`",
                             style={"text-align": "center"},
                         )
@@ -378,6 +414,7 @@ app.layout = dbc.Container(
                                     x="treatment_time_months",
                                     y="patient_diagnosis",
                                     marginal_y="histogram",
+                                    nbinsx=40,
                                     labels={
                                         "patient_diagnosis": "Cancer type",
                                         "treatment_time_months": "Treatment time (months)",
@@ -403,13 +440,12 @@ app.layout = dbc.Container(
 if __name__ == "__main__":
     app.run_server(debug=True)
 
-px.density_heatmap(
-    dagg,
-    x="treatment_time_months",
-    y="patient_diagnosis",
-    marginal_y="histogram",
-    labels={
-        "patient_diagnosis": "Cancer type",
-        "treatment_time_months": "Treatment time (months)",
-    },
+
+px.histogram(
+    pagg,
+    x='cancer_type',
+    y='event_count',
+    histfunc='avg',
+    labels={'cancer_type':'Cancer type', 'event_count': 'Number of events'},
+    opacity=0.7
 )
