@@ -14,14 +14,12 @@ from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 from dataframes import unit_agg as uagg
 
-external_stylesheets = [
-    dbc.themes.BOOTSTRAP
-]
+external_stylesheets = [dbc.themes.BOOTSTRAP]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-app.title = 'Gyncancer data EDA'
+app.title = "Gyncancer data EDA"
 
-app.index_string = '''
+app.index_string = """
 <!DOCTYPE html>
 <html>
     <head>
@@ -44,7 +42,7 @@ app.index_string = '''
         <div></div>
     </body>
 </html>
-'''
+"""
 
 
 PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
@@ -52,21 +50,28 @@ PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
 server = app.server
 
 dropdown = dbc.DropdownMenu(
-            children=[
-                dbc.DropdownMenuItem("More pages", header=True),
-                dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
-                dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
-                dbc.DropdownMenuItem("Activities by unit", href="#activities_by_unit", external_link=True),
-            ],
-            nav=True,
-            in_navbar=False,
-            label="All graphs",
-            direction='left',
-            className="ml-auto flex-nowrap"
+    children=[
+        dbc.DropdownMenuItem("More pages", header=True),
+        dbc.DropdownMenuItem(
+            "Activity by division", href="#activity_by_division", external_link=True
+        ),
+        dbc.DropdownMenuItem(
+            "Treatment time by division", href="#boxplot", external_link=True
+        ),
+        dbc.DropdownMenuItem(
+            "Activities by unit", href="#activities_by_unit", external_link=True
+        ),
+    ],
+    nav=True,
+    in_navbar=False,
+    label="All graphs",
+    direction="left",
+    className="ml-auto flex-nowrap",
 )
 
 
-navbar = dbc.Navbar([
+navbar = dbc.Navbar(
+    [
         # dbc.Row(
         #     [
         #         dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
@@ -100,32 +105,47 @@ navbar = dbc.Navbar([
 
 app.layout = dbc.Container(
     [
-        dbc.Navbar([
-            dbc.Row(
-                [
-                    dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
-                    dbc.Col(dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")),
-                ],
-                align="center",
-                no_gutters=False,
-                #className='mr-0'
-            ),
-            dbc.DropdownMenu(
-                children=[
-                    dbc.DropdownMenuItem("More pages", header=True),
-                    dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
-                    dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
-                    dbc.DropdownMenuItem("Activities by unit", href="#activities_by_unit", external_link=True),
-                ],
-                nav=True,
-                in_navbar=False,
-                label="All graphs",
-                direction='left',
-                className="ml-auto flex-nowrap"
-            )
-        ],
-            color='dark',
-            dark=True
+        dbc.Navbar(
+            [
+                dbc.Row(
+                    [
+                        dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+                        dbc.Col(
+                            dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")
+                        ),
+                    ],
+                    align="center",
+                    no_gutters=False,
+                    # className='mr-0'
+                ),
+                dbc.DropdownMenu(
+                    children=[
+                        dbc.DropdownMenuItem("More pages", header=True),
+                        dbc.DropdownMenuItem(
+                            "Activity by division",
+                            href="#activity_by_division",
+                            external_link=True,
+                        ),
+                        dbc.DropdownMenuItem(
+                            "Treatment time by division",
+                            href="#boxplot",
+                            external_link=True,
+                        ),
+                        dbc.DropdownMenuItem(
+                            "Activities by unit",
+                            href="#activities_by_unit",
+                            external_link=True,
+                        ),
+                    ],
+                    nav=True,
+                    in_navbar=False,
+                    label="All graphs",
+                    direction="left",
+                    className="ml-auto flex-nowrap",
+                ),
+            ],
+            color="dark",
+            dark=True,
         ),
         dbc.Row(
             [
@@ -134,7 +154,7 @@ app.layout = dbc.Container(
                         dbc.Col(
                             [
                                 dcc.Markdown(
-                                    "#### `Activity` count over time per `division`, first 36 months",
+                                    "#### `Activity count` over time per `division`",
                                     style={"text-align": "center"},
                                 )
                             ],
@@ -155,7 +175,7 @@ app.layout = dbc.Container(
                                             },
                                             histfunc="count",
                                             color_discrete_sequence=["indianred"],
-                                            opacity=0.7
+                                            opacity=0.7,
                                         )
                                     )
                                 )
@@ -210,12 +230,12 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         dcc.Markdown(
-                            "#### `Activity count` over time per `division`",
+                            "#### `Activity` count over time per `division`, first 36 months",
                             style={"text-align": "center"},
                         )
                     ],
                     className="mt-5",
-                    id='activity_by_division',
+                    id="activity_by_division",
                     width=11,
                 ),
                 dbc.Col(
@@ -235,7 +255,7 @@ app.layout = dbc.Container(
                                     labels={
                                         "activities_count": "unique activities",
                                         "months_passed": "Months passed since day 1",
-                                    }
+                                    },
                                 )
                             )
                         )
@@ -259,7 +279,7 @@ app.layout = dbc.Container(
                     ],
                     width=8,
                     className="mt-5",
-                    id='boxplot',
+                    id="boxplot",
                 ),
                 dbc.Col(
                     [
@@ -284,7 +304,7 @@ app.layout = dbc.Container(
             ],
             align="start",
             justify="center",
-            className="mt-4"
+            className="mt-4",
         ),
         dbc.Row(
             [
@@ -297,7 +317,7 @@ app.layout = dbc.Container(
                     ],
                     width=8,
                     className="mt-5",
-                    id='activities_by_unit',
+                    id="activities_by_unit",
                 ),
                 dbc.Col(
                     [
@@ -305,15 +325,16 @@ app.layout = dbc.Container(
                             figure=(
                                 px.histogram(
                                     uagg.iloc[0:10],
-                                    x='unit_name',
-                                    y='median_activities',
-                                    histfunc='avg',
-                                    color_discrete_sequence=['indianred'],
+                                    x="unit_name",
+                                    y="median_activities",
+                                    histfunc="avg",
+                                    color_discrete_sequence=["indianred"],
                                     opacity=0.7,
                                     log_y=True,
-                                    labels={'unit_name': 'Unit/team name',
-                                            'median_activities': 'activity count (log scale)'}
-
+                                    labels={
+                                        "unit_name": "Unit/team name",
+                                        "median_activities": "activity count (log scale)",
+                                    },
                                 )
                             )
                         )
@@ -324,11 +345,11 @@ app.layout = dbc.Container(
             ],
             align="start",
             justify="center",
-            className="mt-4"
-        )
+            className="mt-4",
+        ),
     ],
     fluid=True,
-    style={'width': '100%'}
+    style={"width": "100%"},
 )
 
 if __name__ == "__main__":
