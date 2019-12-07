@@ -12,6 +12,7 @@ import numpy as np
 from dataframes import gyncancer_data as gdata
 from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
+from dataframes import unit_agg as uagg
 
 external_stylesheets = [
     dbc.themes.BOOTSTRAP
@@ -303,7 +304,7 @@ app.layout = dbc.Container(
                         dcc.Graph(
                             figure=(
                                 px.histogram(
-                                    unit_agg.iloc[0:10],
+                                    uagg.iloc[0:10],
                                     x='unit_name',
                                     y='median_activities',
                                     histfunc='avg',
