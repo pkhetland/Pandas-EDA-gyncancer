@@ -382,6 +382,7 @@ app.layout = dbc.Container(
                                         "patient_diagnosis": "Cancer type",
                                         "treatment_time_months": "Treatment time (months)",
                                     },
+                                    color_continuous_scale=px.colors.sequential.Magma
                                 )
                             )
                         )
