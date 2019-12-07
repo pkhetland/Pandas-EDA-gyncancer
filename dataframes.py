@@ -80,3 +80,20 @@ patient_agg["treatment_time_months"] = (
 patient_agg = patient_agg[patient_agg["treatment_time"] != "0 days"]
 patient_agg = patient_agg.sort_values(["treatment_time_months"])
 patient_agg = patient_agg[patient_agg["cancer_type"] != "Unspecified tumor"]
+
+# Creating 'unit_agg' dataframe
+unit_agg = gyncancer_data.groupby(['org.unit.name'])
+
+unit_agg = unit_agg.agg(
+    activity_name = ('activity.name', 'count'),
+    median_activities = ('patient.id', 'count'),
+    first_occurrence = ('event.timestamp', 'min'),
+    last_occurrence = ('event.timestamp', 'max'),
+    unit_name = ('org.unit.name', 'first')
+)
+
+unit_agg['timespan'] = unit_agg['last_occurrence'] - unit_agg['first_occurrence']
+#unit_agg['total_median_activities_per_team'] = unit_agg.groupby(level=0)['median_activities'].transform(sum).round(1)
+#unit_agg['median_percent_of_occurrences'] = (unit_agg['median_activities']/unit_agg['total_median_activities_per_team'])*100
+unit_agg = unit_agg.sort_values('median_activities', ascending=False)
+unit_agg = unit_agg[unit_agg['median_activities'] > 1]

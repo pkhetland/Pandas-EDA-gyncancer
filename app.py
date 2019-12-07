@@ -55,40 +55,77 @@ dropdown = dbc.DropdownMenu(
                 dbc.DropdownMenuItem("More pages", header=True),
                 dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
                 dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
+                dbc.DropdownMenuItem("Activities by unit", href="#activities_by_unit", external_link=True),
             ],
             nav=True,
             in_navbar=False,
             label="All graphs",
             direction='left',
-            className="ml-auto flex-nowrap mt-md-0 mr-0"
+            className="ml-auto flex-nowrap"
 )
 
 
-navbar = dbc.Row([dbc.Navbar([
-    dbc.Container([
-        dbc.Row(
-            [
-                dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
-                dbc.Col(dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")),
-            ],
-            align="center",
-            no_gutters=False,
-            className='mr-0'
-        ),
-        dropdown,
-    ], fluid=True)
+navbar = dbc.Navbar([
+        # dbc.Row(
+        #     [
+        #         dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+        #         dbc.Col(dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")),
+        #     ],
+        #     align="center",
+        #     no_gutters=False,
+        #     className='mr-0'
+        # ),
+        # dbc.DropdownMenu(
+        #     children=[
+        #         dbc.DropdownMenuItem("More pages", header=True),
+        #         dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
+        #         dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
+        #         dbc.DropdownMenuItem("Activities by unit", href="#activities_by_unit", external_link=True),
+        #     ],
+        #     nav=True,
+        #     in_navbar=False,
+        #     label="All graphs",
+        #     direction='left',
+        #     className="ml-auto flex-nowrap"
+        # )
     ],
-    color='dark',
-    dark=True,
-    className='ml-0 mr-0'
-)])
+    # color='dark',
+    # dark=True,
+    # className='ml-0 mr-0'
+)
 
 """ LAYOUT
 """
 
 app.layout = dbc.Container(
     [
-        navbar,
+        dbc.Navbar([
+            dbc.Row(
+                [
+                    dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+                    dbc.Col(dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")),
+                ],
+                align="center",
+                no_gutters=False,
+                #className='mr-0'
+            ),
+            dbc.DropdownMenu(
+                children=[
+                    dbc.DropdownMenuItem("More pages", header=True),
+                    dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
+                    dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
+                    dbc.DropdownMenuItem("Activities by unit", href="#activities_by_unit", external_link=True),
+                ],
+                nav=True,
+                in_navbar=False,
+                label="All graphs",
+                direction='left',
+                className="ml-auto flex-nowrap"
+            )
+        ],
+            color='dark',
+            dark=True
+        ),
         dbc.Row(
             [
                 dbc.Col(
@@ -248,8 +285,49 @@ app.layout = dbc.Container(
             justify="center",
             className="mt-4"
         ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### Histogram showing the distribution of total activities by `org.unit.name`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    width=8,
+                    className="mt-5",
+                    id='activities_by_unit',
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.histogram(
+                                    unit_agg.iloc[0:10],
+                                    x='unit_name',
+                                    y='median_activities',
+                                    histfunc='avg',
+                                    color_discrete_sequence=['indianred'],
+                                    opacity=0.7,
+                                    log_y=True,
+                                    labels={'unit_name': 'Unit/team name',
+                                            'median_activities': 'activity count (log scale)'}
+
+                                )
+                            )
+                        )
+                    ],
+                    className="mt-5 mb-5",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="center",
+            className="mt-4"
+        )
     ],
-    fluid=True
+    fluid=True,
+    style={'width': '100%'}
 )
 
 if __name__ == "__main__":
