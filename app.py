@@ -13,6 +13,7 @@ from dataframes import gyncancer_data as gdata
 from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 from dataframes import unit_agg as uagg
+from dataframes import diagnosis_agg as dagg
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
@@ -154,7 +155,7 @@ app.layout = dbc.Container(
                         dbc.Col(
                             [
                                 dcc.Markdown(
-                                    "#### `Activity count` over time per `division`",
+                                    "#### Count of `patient diagnosis` by `cancer type`",
                                     style={"text-align": "center"},
                                 )
                             ],
@@ -347,6 +348,52 @@ app.layout = dbc.Container(
             justify="center",
             className="mt-4",
         ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### Heatmap showing distribution of ´number of cases´ by top 5 diagnoses and `average treatment time`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    width=8,
+                    className="mt-5",
+                    id="treatment_time_heatmap",
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.density_heatmap(
+                                    dagg.loc[
+                                        [
+                                            "Cervical cancer",
+                                            "Ovarian cancer",
+                                            "Uterine cancer",
+                                            "Vulvar cancer",
+                                            "Endometrial cancer",
+                                        ]
+                                    ],
+                                    x="treatment_time_months",
+                                    y="patient_diagnosis",
+                                    marginal_y="histogram",
+                                    labels={
+                                        "patient_diagnosis": "Cancer type",
+                                        "treatment_time_months": "Treatment time (months)",
+                                    },
+                                )
+                            )
+                        )
+                    ],
+                    className="mt-5 mb-5",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="center",
+            className="mt-4",
+        ),
     ],
     fluid=True,
     style={"width": "100%"},
@@ -354,3 +401,14 @@ app.layout = dbc.Container(
 
 if __name__ == "__main__":
     app.run_server(debug=True)
+
+px.density_heatmap(
+    dagg,
+    x="treatment_time_months",
+    y="patient_diagnosis",
+    marginal_y="histogram",
+    labels={
+        "patient_diagnosis": "Cancer type",
+        "treatment_time_months": "Treatment time (months)",
+    },
+)

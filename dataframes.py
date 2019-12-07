@@ -97,3 +97,41 @@ unit_agg['timespan'] = unit_agg['last_occurrence'] - unit_agg['first_occurrence'
 #unit_agg['median_percent_of_occurrences'] = (unit_agg['median_activities']/unit_agg['total_median_activities_per_team'])*100
 unit_agg = unit_agg.sort_values('median_activities', ascending=False)
 unit_agg = unit_agg[unit_agg['median_activities'] > 1]
+
+# Creating 'diagnosis_agg' dataframe
+
+diagnosis_agg = gyncancer_data.groupby(['patient.diagnosis', 'patient.id'])
+
+diagnosis_agg = diagnosis_agg.agg(
+    first_ts = ('event.timestamp', 'first'),
+    last_ts = ('event.timestamp', 'last'),
+    event_count = ('event.timestamp', 'count'),
+    patient_age = ('patient.age', 'mean'),
+    start_month = ('all_time_months_passed', 'min'),
+    end_month = ('all_time_months_passed', 'max'),
+    patient_diagnosis = ('patient.diagnosis', 'last')
+)
+
+diagnosis_agg = diagnosis_agg[diagnosis_agg['patient_diagnosis'] != 'No cancer diagnosed']
+
+diagnosis_agg['average_age'] = diagnosis_agg.groupby(level=0)['patient_age'].transform('mean').round(1)
+
+diagnosis_agg['age_deviation'] = diagnosis_agg.groupby(level=0)['patient_age'].transform('std').round(1)
+
+diagnosis_agg['treatment_time_days'] = diagnosis_agg['last_ts'] - diagnosis_agg['first_ts']
+
+diagnosis_agg = diagnosis_agg[diagnosis_agg['treatment_time_days'] != '0 days']
+
+diagnosis_agg['treatment_time_months'] = diagnosis_agg['end_month'] - diagnosis_agg['start_month']
+
+diagnosis_agg['avg_treatment_time_days'] = diagnosis_agg['last_ts'].mean () - diagnosis_agg['first_ts'].mean()
+
+diagnosis_agg['avg_treatment_time_months'] = diagnosis_agg.groupby(level=0)['treatment_time_months'].transform('mean').round(1)
+
+diagnosis_agg['treatment_time_deviation'] = diagnosis_agg.groupby(level=0)['treatment_time_months'].transform('std').round(1)
+
+diagnosis_agg['num_of_cases_per_diagnosis'] = diagnosis_agg.groupby(level=0)['event_count'].transform('sum')
+
+diagnosis_agg = diagnosis_agg[diagnosis_agg['patient_diagnosis'] != 'Unspecified tumor']
+
+diagnosis_agg = diagnosis_agg.sort_values(['avg_treatment_time_months'], ascending=False)
