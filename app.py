@@ -486,6 +486,12 @@ app.layout = dbc.Container(
             justify="center",
             className="mt-4",
         ),
+        dbc.Row([  # Footer row
+            dbc.Col([
+                dcc.Markdown("Author GitHub: **pkhetland**", style={'color': 'white'})
+            ], width=2, className='mt-2 mb-2')
+        ], justify='center', align='center', style={'background-size': 'cover',
+                                                   'background-color': '#4f4f4f'}),
     ],
     fluid=True,
     style={"width": "100%"},
