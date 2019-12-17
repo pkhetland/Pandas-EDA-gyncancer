@@ -135,3 +135,16 @@ diagnosis_agg['num_of_cases_per_diagnosis'] = diagnosis_agg.groupby(level=0)['ev
 diagnosis_agg = diagnosis_agg[diagnosis_agg['patient_diagnosis'] != 'Unspecified tumor']
 
 diagnosis_agg = diagnosis_agg.sort_values(['avg_treatment_time_months'], ascending=False)
+
+# Aggregating data by division and patient ID
+
+division_by_patient_agg = gyncancer_data.groupby(['org.division.name', 'patient.id'])
+
+division_by_patient_agg = division_by_patient_agg.agg(
+    first_ts = ('event.timestamp', 'min'),
+    last_ts = ('event.timestamp', 'max'),
+    age = ('patient.age', 'mean'),
+    division = ('org.division.name', 'last')
+)
+
+division_by_patient_agg = division_by_patient_agg[division_by_patient_agg['division'] != 'Other']

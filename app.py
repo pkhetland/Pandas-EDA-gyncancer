@@ -14,6 +14,7 @@ from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 from dataframes import unit_agg as uagg
 from dataframes import diagnosis_agg as dagg
+from dataframes import division_by_patient_agg as dpagg
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
@@ -243,20 +244,22 @@ app.layout = dbc.Container(
                     [
                         dcc.Graph(
                             figure=(
-                                px.histogram(
+                                px.line(
                                     magg.loc[0:35],
+                                    template='plotly_dark',
                                     x="months_passed",
                                     y="activities_count",
-                                    histfunc="sum",
+                                    # histfunc="sum",
                                     # histnorm='probability',
                                     color="division_name",
-                                    nbins=47,
-                                    marginal="box",
-                                    opacity=0.8,
+                                    # nbins=47,
+                                    # marginal="box",
+                                    # opacity=0.8,
                                     labels={
                                         "activities_count": "unique activities",
                                         "months_passed": "Months passed since day 1",
                                     },
+
                                 )
                             )
                         )
@@ -432,6 +435,40 @@ app.layout = dbc.Container(
             justify="center",
             className="mt-4",
         ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### Boxplot showing the distribution of `patient.age` by `org.division.name`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    width=8,
+                    className="mt-5",
+                    id="division_age_box",
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.box(
+                                    dpagg,
+                                    x='division',
+                                    y='age',
+                                    labels={'age': 'Patient age', 'division': 'Division'}
+                                    )
+                            )
+                        )
+                    ],
+                    className="mt-5 mb-5",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="center",
+            className="mt-4",
+        ),
     ],
     fluid=True,
     style={"width": "100%"},
@@ -439,13 +476,3 @@ app.layout = dbc.Container(
 
 if __name__ == "__main__":
     app.run_server(debug=True)
-
-
-px.histogram(
-    pagg,
-    x='cancer_type',
-    y='event_count',
-    histfunc='avg',
-    labels={'cancer_type':'Cancer type', 'event_count': 'Number of events'},
-    opacity=0.7
-)
