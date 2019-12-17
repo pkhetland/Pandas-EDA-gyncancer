@@ -107,48 +107,65 @@ navbar = dbc.Navbar(
 
 app.layout = dbc.Container(
     [
-        dbc.Navbar(
-            [
-                dbc.Row(
-                    [
-                        dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
-                        dbc.Col(
-                            dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")
-                        ),
-                    ],
-                    align="center",
-                    no_gutters=False,
-                    # className='mr-0'
-                ),
-                dbc.DropdownMenu(
-                    children=[
-                        dbc.DropdownMenuItem("More pages", header=True),
-                        dbc.DropdownMenuItem(
-                            "Activity by division",
-                            href="#activity_by_division",
-                            external_link=True,
-                        ),
-                        dbc.DropdownMenuItem(
-                            "Treatment time by division",
-                            href="#boxplot",
-                            external_link=True,
-                        ),
-                        dbc.DropdownMenuItem(
-                            "Activities by unit",
-                            href="#activities_by_unit",
-                            external_link=True,
-                        ),
-                    ],
-                    nav=True,
-                    in_navbar=False,
-                    label="All graphs",
-                    direction="left",
-                    className="ml-auto flex-nowrap",
-                ),
-            ],
-            color="dark",
-            dark=True,
-        ),
+        # dbc.Navbar(
+        #     [
+        #         dbc.Row(
+        #             [
+        #                 dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+        #                 dbc.Col(
+        #                     dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")
+        #                 ),
+        #             ],
+        #             align="center",
+        #             no_gutters=False,
+        #             # className='mr-0'
+        #         ),
+        #         dbc.DropdownMenu(
+        #             children=[
+        #                 dbc.DropdownMenuItem("More pages", header=True),
+        #                 dbc.DropdownMenuItem(
+        #                     "Activity by division",
+        #                     href="#activity_by_division",
+        #                     external_link=True,
+        #                 ),
+        #                 dbc.DropdownMenuItem(
+        #                     "Treatment time by division",
+        #                     href="#boxplot",
+        #                     external_link=True,
+        #                 ),
+        #                 dbc.DropdownMenuItem(
+        #                     "Activities by unit",
+        #                     href="#activities_by_unit",
+        #                     external_link=True,
+        #                 ),
+        #             ],
+        #             nav=True,
+        #             in_navbar=False,
+        #             label="All graphs",
+        #             direction="left",
+        #             className="ml-auto flex-nowrap",
+        #         ),
+        #     ],
+        #     color="dark",
+        #     dark=True,
+        # ),
+        dbc.Row([  # Header row
+            dbc.Col([
+                dcc.Markdown("#### INN350 - **Team 15**", style={'color': '#f66783',
+                                                                 'text-shadow': '0px 2px black'})
+            ], className='ml-5 mt-2 mb-2')
+        ], justify='center', align='start', style={'background-size': 'cover',
+                                                   'background-color': '#4f4f4f'}),
+        dbc.Row([  # Introduction text
+            dbc.Col([
+                dcc.Markdown(
+                """
+                The following `interactive` visualisations are the result of an elaborate explorative data analysis of 
+                gyncancer data provided by **AUMC**.
+                """)
+                ], width=6, className='mt-5 mb-5')
+        ], justify='center', align='center', className='', style={'background-size': 'cover',
+                                                                      'background-color': '#fbfbfb'}),
         dbc.Row(
             [
                 dbc.Col(
