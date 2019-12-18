@@ -434,7 +434,55 @@ app.layout = dbc.Container(
                                     x="treatment_time_months",
                                     y="patient_diagnosis",
                                     marginal_y="histogram",
-                                    nbinsx=40,
+                                    nbinsx=50,
+                                    labels={
+                                        "patient_diagnosis": "Cancer type",
+                                        "treatment_time_months": "Treatment time (months)",
+                                    },
+                                    color_continuous_scale=px.colors.sequential.Magma
+                                )
+                            )
+                        )
+                    ],
+                    className="mt-5 mb-5",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="center",
+            className="mt-4",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### Heatmap showing distribution of ´number of cases´ by top 5 diagnoses and `patient age`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    width=8,
+                    className="mt-5",
+                    id="age_heatmap",
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.density_heatmap(
+                                    dagg.loc[
+                                        [
+                                            "Cervical cancer",
+                                            "Ovarian cancer",
+                                            "Uterine cancer",
+                                            "Vulvar cancer",
+                                            "Endometrial cancer",
+                                        ]
+                                    ],
+                                    x="patient_age",
+                                    y="patient_diagnosis",
+                                    marginal_y="histogram",
+                                    nbinsx=50,
                                     labels={
                                         "patient_diagnosis": "Cancer type",
                                         "treatment_time_months": "Treatment time (months)",
