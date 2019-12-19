@@ -237,7 +237,7 @@ for unit in units:
     )
 
 # Joining dataframes
-joined_months_agg = pd.concat(
+joined_months_unit_agg = pd.concat(
     [
         unit_dataframes["Radiotherapy"],
         unit_dataframes["Clinical chemistry"],
@@ -247,5 +247,68 @@ joined_months_agg = pd.concat(
         unit_dataframes["Radiology"],
         unit_dataframes["Internal medicine clinic"],
         unit_dataframes["Pathology"],
+    ]
+)
+
+# Aggregating months by division
+
+months_agg_div = gyncancer_data.groupby(
+    ["all_time_months_passed", "org.division.name"]
+)
+
+months_agg_div = months_agg_div.agg(
+    activities_count=("patient.id", "count"),
+    average_age=("patient.age", "mean"),
+    first_ts=("event.timestamp", "min"),
+    last_ts=("event.timestamp", "max"),
+    months_passed=("all_time_months_passed", "mean"),
+    division_name=("org.division.name", "first"),
+    patient_count=("patient.id", "nunique"),
+)
+
+# Create normalized activities count
+months_agg_div["normalized_activities_count"] = (
+    months_agg_div["activities_count"] / months_agg_div["patient_count"]
+)
+# Create mean column
+months_agg_div["activities_count_mean"] = months_agg_div.groupby(level=1)[
+    "normalized_activities_count"
+].transform("mean")
+
+# Filtering away last months
+months_agg_div = months_agg_div.loc[0:36]
+
+# Creating dataframes for each unit
+
+divisions = [
+    "Brain and senses",
+    "Imaging and radiotherapy",
+    "Internal medicine",
+    "Laboratories",
+    "Surgery",
+    "Surgical sentre and intensive care",
+    "Woman and child"
+]
+division_dataframes = {}
+for division in divisions:
+    division_dataframes[division] = pd.DataFrame()
+    division_dataframes[division] = months_agg_div[months_agg_div["division_name"] == division]
+
+# Adding zscore to dataframes
+for division in divisions:
+    division_dataframes[division]["zscore"] = stats.zscore(
+        division_dataframes[division]["normalized_activities_count"]
+    )
+
+# Joining dataframes
+joined_months_div_agg = pd.concat(
+    [
+        division_dataframes["Brain and senses"],
+        division_dataframes["Imaging and radiotherapy"],
+        division_dataframes["Internal medicine"],
+        division_dataframes["Laboratories"],
+        division_dataframes["Surgery"],
+        division_dataframes["Surgical sentre and intensive care"],
+        division_dataframes["Woman and child"]
     ]
 )

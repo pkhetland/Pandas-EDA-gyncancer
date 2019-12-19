@@ -18,7 +18,8 @@ from dataframes import unit_agg as uagg
 from dataframes import diagnosis_agg as dagg
 from dataframes import division_by_patient_agg as dpagg
 from dataframes import gyncancer_data_filtered as gdataf
-from dataframes import joined_months_agg as jmagg
+from dataframes import joined_months_unit_agg as jmuagg
+from dataframes import joined_months_div_agg as jmdagg
 
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -130,7 +131,7 @@ This graph shows the `activity count` of the most active units per month.
                         dcc.Graph(
                             figure=(
                                 px.line(
-                                    jmagg,
+                                    jmuagg,
                                     x="months_passed",
                                     y="activities_count",
                                     # histfunc="sum",
@@ -188,7 +189,7 @@ by the `number of patients` in that unit at the time.
                         dcc.Graph(
                             figure=(
                                 px.line(
-                                    jmagg,
+                                    jmuagg,
                                     x="months_passed",
                                     y="normalized_activities_count",
                                     # histfunc="sum",
@@ -219,7 +220,7 @@ by the `number of patients` in that unit at the time.
                 dbc.Col(  # Title
                     [
                         dcc.Markdown(
-                            "#### `Normalized activity count` for 8 most active units",
+                            "#### `Activity count` deviation for 8 most active units",
                             style={"text-align": "center"},
                         )
                     ],
@@ -246,10 +247,173 @@ over time leading to universally low or high activity counts across units.
                         dcc.Graph(
                             figure=(
                                 px.line(
-                                    jmagg,
+                                    jmuagg,
                                     x="months_passed",
                                     y="zscore",
                                     color="unit_name",
+                                    title="Zscore by month",
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=11,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(  # Vanilla activities - Divisions
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### `Activity` count over time per `division`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="activities_by_division",
+                    width=11,
+                ),
+                dbc.Col(  # Description
+                    [
+                        dcc.Markdown(
+                            """
+This graph shows the `activity count` of divisions per month.
+                            """,
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    width=11,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.line(
+                                    jmdagg,
+                                    x="months_passed",
+                                    y="activities_count",
+                                    # histfunc="sum",
+                                    # histnorm='probability',
+                                    color="division_name",
+                                    # nbins=47,
+                                    # marginal="box",
+                                    # opacity=0.8,
+                                    title="Activities per month (raw)",
+                                    labels={
+                                        "activities_count": "Unique activities",
+                                        "months_passed": "Months passed since day 1",
+                                    },
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=11,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(  # Normalized activities
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### `Normalized activity count` over time per `division`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="normal_activities_by_division",
+                    width=11,
+                ),
+                dbc.Col(  # Description
+                    [
+                        dcc.Markdown(
+                            """
+This graph shows the `normalized activity count` of divisions per month.
+"Normalized" in this case means that we have divided each activity count for each division
+by the `number of patients` in that unit at the time.
+                            """,
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    width=11,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.line(
+                                    jmdagg,
+                                    x="months_passed",
+                                    y="normalized_activities_count",
+                                    # histfunc="sum",
+                                    # histnorm='probability',
+                                    color="division_name",
+                                    # nbins=47,
+                                    # marginal="box",
+                                    # opacity=0.8,
+                                    title="Activities per month (norm)",
+                                    labels={
+                                        "activities_count": "Unique activities",
+                                        "months_passed": "Months passed since day 1",
+                                    },
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=11,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(  # Zscore of divisions
+            [
+                dbc.Col(  # Title
+                    [
+                        dcc.Markdown(
+                            "#### `Activity count` deviation for divisions",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="zscore_by_division",
+                    width=11,
+                ),
+                dbc.Col(  # Description
+                    [
+                        dcc.Markdown(
+                            """
+This graph shows the `deviation` (or z-score) of the activity count of 
+divisions per month after normalizing the data. This allows us to identify trends
+over time leading to universally low or high activity counts across units.
+                            """,
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    width=11,
+                ),
+                dbc.Col(  # Graph
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.line(
+                                    jmdagg,
+                                    x="months_passed",
+                                    y="zscore",
+                                    color="division_name",
                                     title="Zscore by month",
                                 )
                             )
