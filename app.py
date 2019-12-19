@@ -1,3 +1,4 @@
+# Modul imports
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
@@ -7,14 +8,17 @@ import datetime
 import plotly.express as px
 import pandas as pd
 import numpy as np
+from scypi import stats
 
-
+# Importing dataframes from dataframes.py
 from dataframes import gyncancer_data as gdata
 from dataframes import months_agg as magg
 from dataframes import patient_agg as pagg
 from dataframes import unit_agg as uagg
 from dataframes import diagnosis_agg as dagg
 from dataframes import division_by_patient_agg as dpagg
+from dataframes import gyncancer_data_filtered as gdataf
+
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
@@ -51,122 +55,94 @@ PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
 
 server = app.server
 
-dropdown = dbc.DropdownMenu(
-    children=[
-        dbc.DropdownMenuItem("More pages", header=True),
-        dbc.DropdownMenuItem(
-            "Activity by division", href="#activity_by_division", external_link=True
-        ),
-        dbc.DropdownMenuItem(
-            "Treatment time by division", href="#boxplot", external_link=True
-        ),
-        dbc.DropdownMenuItem(
-            "Activities by unit", href="#activities_by_unit", external_link=True
-        ),
-    ],
-    nav=True,
-    in_navbar=False,
-    label="All graphs",
-    direction="left",
-    className="ml-auto flex-nowrap",
-)
-
-
-navbar = dbc.Navbar(
-    [
-        # dbc.Row(
-        #     [
-        #         dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
-        #         dbc.Col(dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")),
-        #     ],
-        #     align="center",
-        #     no_gutters=False,
-        #     className='mr-0'
-        # ),
-        # dbc.DropdownMenu(
-        #     children=[
-        #         dbc.DropdownMenuItem("More pages", header=True),
-        #         dbc.DropdownMenuItem("Activity by division", href="#activity_by_division", external_link=True),
-        #         dbc.DropdownMenuItem("Treatment time by division", href="#boxplot", external_link=True),
-        #         dbc.DropdownMenuItem("Activities by unit", href="#activities_by_unit", external_link=True),
-        #     ],
-        #     nav=True,
-        #     in_navbar=False,
-        #     label="All graphs",
-        #     direction='left',
-        #     className="ml-auto flex-nowrap"
-        # )
-    ],
-    # color='dark',
-    # dark=True,
-    # className='ml-0 mr-0'
-)
-
 """ LAYOUT
 """
 
 app.layout = dbc.Container(
     [
-        # dbc.Navbar(
-        #     [
-        #         dbc.Row(
-        #             [
-        #                 dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
-        #                 dbc.Col(
-        #                     dbc.NavbarBrand("EDA - INN350 Team 15", className="ml-3")
-        #                 ),
-        #             ],
-        #             align="center",
-        #             no_gutters=False,
-        #             # className='mr-0'
-        #         ),
-        #         dbc.DropdownMenu(
-        #             children=[
-        #                 dbc.DropdownMenuItem("More pages", header=True),
-        #                 dbc.DropdownMenuItem(
-        #                     "Activity by division",
-        #                     href="#activity_by_division",
-        #                     external_link=True,
-        #                 ),
-        #                 dbc.DropdownMenuItem(
-        #                     "Treatment time by division",
-        #                     href="#boxplot",
-        #                     external_link=True,
-        #                 ),
-        #                 dbc.DropdownMenuItem(
-        #                     "Activities by unit",
-        #                     href="#activities_by_unit",
-        #                     external_link=True,
-        #                 ),
-        #             ],
-        #             nav=True,
-        #             in_navbar=False,
-        #             label="All graphs",
-        #             direction="left",
-        #             className="ml-auto flex-nowrap",
-        #         ),
-        #     ],
-        #     color="dark",
-        #     dark=True,
-        # ),
-        dbc.Row([  # Header row
-            dbc.Col([
-                dcc.Markdown("#### INN350 - **Team 15**", style={'color': '#f66783',
-                                                                 'text-shadow': '0px 2px black'})
-            ], className='ml-5 mt-2 mb-2')
-        ], justify='center', align='start', style={'background-size': 'cover',
-                                                   'background-color': '#4f4f4f'}),
-        dbc.Row([  # Introduction text
-            dbc.Col([
-                dcc.Markdown(
-                """
+        dbc.Row(
+            [  # Header row
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### INN350 - **Team 15**",
+                            style={"color": "#f66783", "text-shadow": "0px 2px black"},
+                        )
+                    ],
+                    className="ml-5 mt-2 mb-2",
+                )
+            ],
+            justify="center",
+            align="start",
+            style={"background-size": "cover", "background-color": "#4f4f4f"},
+        ),
+        dbc.Row(
+            [  # Introduction text
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            """
                 The following `interactive` visualisations are the result of an elaborate explorative data analysis of 
                 gyncancer data provided by **AUMC**.
-                """)
-                ], width=6, className='mt-5 mb-5')
-        ], justify='center', align='center', className='', style={'background-size': 'cover',
-                                                                      'background-color': '#fbfbfb'}),
-        dbc.Row(
+                """
+                        )
+                    ],
+                    width=6,
+                    className="mt-5 mb-5",
+                )
+            ],
+            justify="center",
+            align="center",
+            className="",
+            style={"background-size": "cover", "background-color": "#fbfbfb"},
+        ),
+        dbc.Row(  # First row: zscore of 8 largest teams
+            [
+                dbc.Col(  # Title
+                    [
+                        dcc.Markdown(
+                            "#### `Activity` count over time per `division`, first 36 months",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="zscore_by_team",
+                    width=11,
+                ),
+                dbc.Col(  # Description
+                    [
+                        dcc.Markdown(
+                            "#### `Activity` count over time per `division`, first 36 months",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+
+                    width=11,
+                ),
+                dbc.Col(  # Graph
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.line(
+                                    gdataf,
+                                    x='months_passed',
+                                    y='zscore',
+                                    color='unit_name',
+                                    title='Zscore by month'
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=11,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(  # Double row
             [
                 dbc.Col(
                     [
@@ -263,7 +239,7 @@ app.layout = dbc.Container(
                             figure=(
                                 px.line(
                                     magg.loc[0:35],
-                                    template='plotly_dark',
+                                    template="plotly_dark",
                                     x="months_passed",
                                     y="activities_count",
                                     # histfunc="sum",
@@ -276,7 +252,6 @@ app.layout = dbc.Container(
                                         "activities_count": "unique activities",
                                         "months_passed": "Months passed since day 1",
                                     },
-
                                 )
                             )
                         )
@@ -308,11 +283,14 @@ app.layout = dbc.Container(
                             figure=(
                                 px.histogram(
                                     pagg,
-                                    x='cancer_type',
-                                    y='event_count',
-                                    histfunc='avg',
-                                    labels={'cancer_type': 'Cancer type', 'event_count': 'Number of events'},
-                                    opacity=0.7
+                                    x="cancer_type",
+                                    y="event_count",
+                                    histfunc="avg",
+                                    labels={
+                                        "cancer_type": "Cancer type",
+                                        "event_count": "Number of events",
+                                    },
+                                    opacity=0.7,
                                 )
                             )
                         )
@@ -439,7 +417,7 @@ app.layout = dbc.Container(
                                         "patient_diagnosis": "Cancer type",
                                         "treatment_time_months": "Treatment time (months)",
                                     },
-                                    color_continuous_scale=px.colors.sequential.Magma
+                                    color_continuous_scale=px.colors.sequential.Magma,
                                 )
                             )
                         )
@@ -487,7 +465,7 @@ app.layout = dbc.Container(
                                         "patient_diagnosis": "Cancer type",
                                         "treatment_time_months": "Treatment time (months)",
                                     },
-                                    color_continuous_scale=px.colors.sequential.Magma
+                                    color_continuous_scale=px.colors.sequential.Magma,
                                 )
                             )
                         )
@@ -519,10 +497,13 @@ app.layout = dbc.Container(
                             figure=(
                                 px.box(
                                     dpagg,
-                                    x='division',
-                                    y='age',
-                                    labels={'age': 'Patient age', 'division': 'Division'}
-                                    )
+                                    x="division",
+                                    y="age",
+                                    labels={
+                                        "age": "Patient age",
+                                        "division": "Division",
+                                    },
+                                )
                             )
                         )
                     ],
@@ -534,12 +515,22 @@ app.layout = dbc.Container(
             justify="center",
             className="mt-4",
         ),
-        dbc.Row([  # Footer row
-            dbc.Col([
-                dcc.Markdown("Author GitHub: **pkhetland**", style={'color': 'white'})
-            ], width=2, className='mt-2 mb-2')
-        ], justify='center', align='center', style={'background-size': 'cover',
-                                                   'background-color': '#4f4f4f'}),
+        dbc.Row(
+            [  # Footer row
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "Author GitHub: **pkhetland**", style={"color": "white"}
+                        )
+                    ],
+                    width=2,
+                    className="mt-2 mb-2",
+                )
+            ],
+            justify="center",
+            align="center",
+            style={"background-size": "cover", "background-color": "#4f4f4f"},
+        ),
     ],
     fluid=True,
     style={"width": "100%"},
