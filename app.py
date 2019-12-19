@@ -8,7 +8,7 @@ import datetime
 import plotly.express as px
 import pandas as pd
 import numpy as np
-from scypi import stats
+
 
 # Importing dataframes from dataframes.py
 from dataframes import gyncancer_data as gdata
@@ -18,6 +18,7 @@ from dataframes import unit_agg as uagg
 from dataframes import diagnosis_agg as dagg
 from dataframes import division_by_patient_agg as dpagg
 from dataframes import gyncancer_data_filtered as gdataf
+from dataframes import joined_months_agg as jmagg
 
 
 external_stylesheets = [dbc.themes.BOOTSTRAP]
@@ -96,12 +97,128 @@ app.layout = dbc.Container(
             className="",
             style={"background-size": "cover", "background-color": "#fbfbfb"},
         ),
-        dbc.Row(  # First row: zscore of 8 largest teams
+        dbc.Row(  # Vanilla activities
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### `Activity` count over time per top 8 `units`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="activities_by_unit",
+                    width=11,
+                ),
+                dbc.Col(  # Description
+                    [
+                        dcc.Markdown(
+                            """
+This graph shows the `activity count` of the most active units per month.
+                            """,
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+
+                    width=11,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.line(
+                                    jmagg,
+                                    x="months_passed",
+                                    y="activities_count",
+                                    # histfunc="sum",
+                                    # histnorm='probability',
+                                    color="unit_name",
+                                    # nbins=47,
+                                    # marginal="box",
+                                    # opacity=0.8,
+                                    title='Activities per month (raw)',
+                                    labels={
+                                        "activities_count": "Unique activities",
+                                        "months_passed": "Months passed since day 1",
+                                    },
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=11,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(  # Normalized activities
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### `Normalized activity count` over time per top 8 `units`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+                    id="normal_activities_by_unit",
+                    width=11,
+                ),
+                dbc.Col(  # Description
+                    [
+                        dcc.Markdown(
+                            """
+This graph shows the `normalized activity count` of the most active units per month.
+"Normalized" in this case means that we have divided each activity count for each unit
+by the `number of patients` in that unit at the time.
+                            """,
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    className="mt-5",
+
+                    width=11,
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.line(
+                                    jmagg,
+                                    x="months_passed",
+                                    y="normalized_activities_count",
+                                    # histfunc="sum",
+                                    # histnorm='probability',
+                                    color="unit_name",
+                                    # nbins=47,
+                                    # marginal="box",
+                                    # opacity=0.8,
+                                    title='Activities per month (norm)',
+                                    labels={
+                                        "activities_count": "Unique activities",
+                                        "months_passed": "Months passed since day 1",
+                                    },
+                                )
+                            )
+                        )
+                    ],
+                    className="mb-5 mt-2",
+                    width=11,
+                ),
+            ],
+            align="start",
+            justify="around",
+            className="mt-4",
+        ),
+        dbc.Row(  # Zscore of 8 largest teams
             [
                 dbc.Col(  # Title
                     [
                         dcc.Markdown(
-                            "#### `Activity` count over time per `division`, first 36 months",
+                            "#### `Normalized activity count` for 8 most active units",
                             style={"text-align": "center"},
                         )
                     ],
@@ -112,7 +229,10 @@ app.layout = dbc.Container(
                 dbc.Col(  # Description
                     [
                         dcc.Markdown(
-                            "#### `Activity` count over time per `division`, first 36 months",
+                            """
+This graph shows the `deviation` of the activity count of units per month, 
+after dividing the activity count per month by registered patients in per unit for the month.
+                            """,
                             style={"text-align": "center"},
                         )
                     ],
@@ -125,7 +245,7 @@ app.layout = dbc.Container(
                         dcc.Graph(
                             figure=(
                                 px.line(
-                                    gdataf,
+                                    jmagg,
                                     x='months_passed',
                                     y='zscore',
                                     color='unit_name',
@@ -225,50 +345,6 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         dcc.Markdown(
-                            "#### `Activity` count over time per `division`, first 36 months",
-                            style={"text-align": "center"},
-                        )
-                    ],
-                    className="mt-5",
-                    id="activity_by_division",
-                    width=11,
-                ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            figure=(
-                                px.line(
-                                    magg.loc[0:35],
-                                    template="plotly_dark",
-                                    x="months_passed",
-                                    y="activities_count",
-                                    # histfunc="sum",
-                                    # histnorm='probability',
-                                    color="division_name",
-                                    # nbins=47,
-                                    # marginal="box",
-                                    # opacity=0.8,
-                                    labels={
-                                        "activities_count": "unique activities",
-                                        "months_passed": "Months passed since day 1",
-                                    },
-                                )
-                            )
-                        )
-                    ],
-                    className="mb-5 mt-2",
-                    width=11,
-                ),
-            ],
-            align="start",
-            justify="around",
-            className="mt-4",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Markdown(
                             "#### `Average number of activities` by `cancer type`",
                             style={"text-align": "center"},
                         )
@@ -352,7 +428,7 @@ app.layout = dbc.Container(
                     ],
                     width=8,
                     className="mt-5",
-                    id="activities_by_unit",
+                    id="activities_by_unit_hist",
                 ),
                 dbc.Col(
                     [

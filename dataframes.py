@@ -1,6 +1,7 @@
 import plotly.express as px
 import pandas as pd
 import numpy as np
+from scipy import stats
 
 """ Defining main dataset and making early adjustments
 """
