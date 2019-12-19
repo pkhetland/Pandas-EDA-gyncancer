@@ -67,7 +67,10 @@ app.layout = dbc.Container(
                     [
                         dcc.Markdown(
                             "#### INN350 - **Team 15**",
-                            style={"color": "#f66783", "text-shadow": "0px 2px black"},
+                            style={
+                                "color": "#f66783",
+                                "text-shadow": "0px 2px black",
+                            },
                         )
                     ],
                     className="ml-5 mt-2 mb-2",
@@ -120,7 +123,6 @@ This graph shows the `activity count` of the most active units per month.
                         )
                     ],
                     className="mt-5",
-
                     width=11,
                 ),
                 dbc.Col(
@@ -137,7 +139,7 @@ This graph shows the `activity count` of the most active units per month.
                                     # nbins=47,
                                     # marginal="box",
                                     # opacity=0.8,
-                                    title='Activities per month (raw)',
+                                    title="Activities per month (raw)",
                                     labels={
                                         "activities_count": "Unique activities",
                                         "months_passed": "Months passed since day 1",
@@ -179,7 +181,6 @@ by the `number of patients` in that unit at the time.
                         )
                     ],
                     className="mt-5",
-
                     width=11,
                 ),
                 dbc.Col(
@@ -196,7 +197,7 @@ by the `number of patients` in that unit at the time.
                                     # nbins=47,
                                     # marginal="box",
                                     # opacity=0.8,
-                                    title='Activities per month (norm)',
+                                    title="Activities per month (norm)",
                                     labels={
                                         "activities_count": "Unique activities",
                                         "months_passed": "Months passed since day 1",
@@ -230,14 +231,14 @@ by the `number of patients` in that unit at the time.
                     [
                         dcc.Markdown(
                             """
-This graph shows the `deviation` of the activity count of units per month, 
-after dividing the activity count per month by registered patients in per unit for the month.
+This graph shows the `deviation` (or z-score) of the activity count of 
+units per month after normalizing the data. This allows us to identify trends
+over time leading to universally low or high activity counts across units.
                             """,
                             style={"text-align": "center"},
                         )
                     ],
                     className="mt-5",
-
                     width=11,
                 ),
                 dbc.Col(  # Graph
@@ -246,10 +247,10 @@ after dividing the activity count per month by registered patients in per unit f
                             figure=(
                                 px.line(
                                     jmagg,
-                                    x='months_passed',
-                                    y='zscore',
-                                    color='unit_name',
-                                    title='Zscore by month'
+                                    x="months_passed",
+                                    y="zscore",
+                                    color="unit_name",
+                                    title="Zscore by month",
                                 )
                             )
                         )
@@ -289,7 +290,9 @@ after dividing the activity count per month by registered patients in per unit f
                                                 "cancer_type": "Cancer type",
                                             },
                                             histfunc="count",
-                                            color_discrete_sequence=["indianred"],
+                                            color_discrete_sequence=[
+                                                "indianred"
+                                            ],
                                             opacity=0.7,
                                         )
                                     )
@@ -596,7 +599,8 @@ after dividing the activity count per month by registered patients in per unit f
                 dbc.Col(
                     [
                         dcc.Markdown(
-                            "Author GitHub: **pkhetland**", style={"color": "white"}
+                            "Author GitHub: **pkhetland**",
+                            style={"color": "white"},
                         )
                     ],
                     width=2,

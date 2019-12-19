@@ -249,4 +249,3 @@ joined_months_agg = pd.concat(
         unit_dataframes["Pathology"],
     ]
 )
-
