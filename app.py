@@ -106,9 +106,18 @@ app.layout = dbc.Container(
                 dbc.Col(
                     [
                         dcc.Markdown(
+                            [
+                                """
+                # Analysis of activities of time
+                """
+                            ],
+                            style={"text-align": "center"},
+                            className="mb-5",
+                        ),
+                        dcc.Markdown(
                             "#### `Activity` count over time per top 8 `units`",
                             style={"text-align": "center"},
-                        )
+                        ),
                     ],
                     className="mt-5",
                     id="activities_by_unit",
@@ -431,6 +440,24 @@ over time leading to universally low or high activity counts across units.
             [
                 dbc.Col(
                     [
+                        dcc.Markdown(
+                            [
+                                """
+# Other analyses
+\n\n
+The following figures show some of the graphs we created to gain valuable insight
+into the gyncancer data provided by the AUMC. We look at the distribution of 
+`treatment times`, `patient ages` and more for the different `cancer types`.
+                    """
+                            ],
+                            style={"text-align": "center"},
+                            className="mb-5",
+                        )
+                    ],
+                    width=8,
+                ),
+                dbc.Col(
+                    [
                         dbc.Col(
                             [
                                 dcc.Markdown(
@@ -506,6 +533,102 @@ over time leading to universally low or high activity counts across units.
             ],
             align="start",
             justify="center",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### Heatmap showing distribution of ´number of cases´ by top 5 diagnoses and `average treatment time`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    width=8,
+                    className="mt-5",
+                    id="treatment_time_heatmap",
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.density_heatmap(
+                                    dagg.loc[
+                                        [
+                                            "Cervical cancer",
+                                            "Ovarian cancer",
+                                            "Uterine cancer",
+                                            "Vulvar cancer",
+                                            "Endometrial cancer",
+                                        ]
+                                    ],
+                                    x="treatment_time_months",
+                                    y="patient_diagnosis",
+                                    marginal_y="histogram",
+                                    nbinsx=50,
+                                    labels={
+                                        "patient_diagnosis": "Cancer type",
+                                        "treatment_time_months": "Treatment time (months)",
+                                    },
+                                    color_continuous_scale=px.colors.sequential.Magma,
+                                )
+                            )
+                        )
+                    ],
+                    className="mt-5 mb-5",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="center",
+            className="mt-4",
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Markdown(
+                            "#### Heatmap showing distribution of ´number of cases´ by top 5 diagnoses and `patient age`",
+                            style={"text-align": "center"},
+                        )
+                    ],
+                    width=8,
+                    className="mt-5",
+                    id="age_heatmap",
+                ),
+                dbc.Col(
+                    [
+                        dcc.Graph(
+                            figure=(
+                                px.density_heatmap(
+                                    dagg.loc[
+                                        [
+                                            "Cervical cancer",
+                                            "Ovarian cancer",
+                                            "Uterine cancer",
+                                            "Vulvar cancer",
+                                            "Endometrial cancer",
+                                        ]
+                                    ],
+                                    x="patient_age",
+                                    y="patient_diagnosis",
+                                    marginal_y="histogram",
+                                    nbinsx=50,
+                                    labels={
+                                        "patient_diagnosis": "Cancer type",
+                                        "treatment_time_months": "Treatment time (months)",
+                                    },
+                                    color_continuous_scale=px.colors.sequential.Magma,
+                                )
+                            )
+                        )
+                    ],
+                    className="mt-5 mb-5",
+                    width=8,
+                ),
+            ],
+            align="start",
+            justify="center",
+            className="mt-4",
         ),
         dbc.Row(
             [
@@ -630,102 +753,6 @@ over time leading to universally low or high activity counts across units.
                 dbc.Col(
                     [
                         dcc.Markdown(
-                            "#### Heatmap showing distribution of ´number of cases´ by top 5 diagnoses and `average treatment time`",
-                            style={"text-align": "center"},
-                        )
-                    ],
-                    width=8,
-                    className="mt-5",
-                    id="treatment_time_heatmap",
-                ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            figure=(
-                                px.density_heatmap(
-                                    dagg.loc[
-                                        [
-                                            "Cervical cancer",
-                                            "Ovarian cancer",
-                                            "Uterine cancer",
-                                            "Vulvar cancer",
-                                            "Endometrial cancer",
-                                        ]
-                                    ],
-                                    x="treatment_time_months",
-                                    y="patient_diagnosis",
-                                    marginal_y="histogram",
-                                    nbinsx=50,
-                                    labels={
-                                        "patient_diagnosis": "Cancer type",
-                                        "treatment_time_months": "Treatment time (months)",
-                                    },
-                                    color_continuous_scale=px.colors.sequential.Magma,
-                                )
-                            )
-                        )
-                    ],
-                    className="mt-5 mb-5",
-                    width=8,
-                ),
-            ],
-            align="start",
-            justify="center",
-            className="mt-4",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Markdown(
-                            "#### Heatmap showing distribution of ´number of cases´ by top 5 diagnoses and `patient age`",
-                            style={"text-align": "center"},
-                        )
-                    ],
-                    width=8,
-                    className="mt-5",
-                    id="age_heatmap",
-                ),
-                dbc.Col(
-                    [
-                        dcc.Graph(
-                            figure=(
-                                px.density_heatmap(
-                                    dagg.loc[
-                                        [
-                                            "Cervical cancer",
-                                            "Ovarian cancer",
-                                            "Uterine cancer",
-                                            "Vulvar cancer",
-                                            "Endometrial cancer",
-                                        ]
-                                    ],
-                                    x="patient_age",
-                                    y="patient_diagnosis",
-                                    marginal_y="histogram",
-                                    nbinsx=50,
-                                    labels={
-                                        "patient_diagnosis": "Cancer type",
-                                        "treatment_time_months": "Treatment time (months)",
-                                    },
-                                    color_continuous_scale=px.colors.sequential.Magma,
-                                )
-                            )
-                        )
-                    ],
-                    className="mt-5 mb-5",
-                    width=8,
-                ),
-            ],
-            align="start",
-            justify="center",
-            className="mt-4",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(
-                    [
-                        dcc.Markdown(
                             "#### Boxplot showing the distribution of `patient.age` by `org.division.name`",
                             style={"text-align": "center"},
                         )
@@ -763,11 +790,15 @@ over time leading to universally low or high activity counts across units.
                 dbc.Col(
                     [
                         dcc.Markdown(
-                            "Author GitHub: **pkhetland**",
-                            style={"color": "white"},
-                        )
+                            "Author GitHub: `pkhetland`",
+                            style={"color": "white", "text-align": "center"},
+                        ),
+                        dcc.Markdown(
+                            "GitHub repo: `https://github.com/pkhetland/Pandas-EDA-gyncancer.git`",
+                            style={"color": "white", "text-align": "center"},
+                        ),
                     ],
-                    width=2,
+                    width=6,
                     className="mt-2 mb-2",
                 )
             ],

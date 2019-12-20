@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 
+pd.options.mode.chained_assignment = None  # default='warn'
+
 """ Defining main dataset and making early adjustments
 """
 # Main dataset
@@ -252,9 +254,7 @@ joined_months_unit_agg = pd.concat(
 
 # Aggregating months by division
 
-months_agg_div = gyncancer_data.groupby(
-    ["all_time_months_passed", "org.division.name"]
-)
+months_agg_div = gyncancer_data.groupby(["all_time_months_passed", "org.division.name"])
 
 months_agg_div = months_agg_div.agg(
     activities_count=("patient.id", "count"),
@@ -287,12 +287,14 @@ divisions = [
     "Laboratories",
     "Surgery",
     "Surgical sentre and intensive care",
-    "Woman and child"
+    "Woman and child",
 ]
 division_dataframes = {}
 for division in divisions:
     division_dataframes[division] = pd.DataFrame()
-    division_dataframes[division] = months_agg_div[months_agg_div["division_name"] == division]
+    division_dataframes[division] = months_agg_div[
+        months_agg_div["division_name"] == division
+    ]
 
 # Adding zscore to dataframes
 for division in divisions:
@@ -309,6 +311,6 @@ joined_months_div_agg = pd.concat(
         division_dataframes["Laboratories"],
         division_dataframes["Surgery"],
         division_dataframes["Surgical sentre and intensive care"],
-        division_dataframes["Woman and child"]
+        division_dataframes["Woman and child"],
     ]
 )
