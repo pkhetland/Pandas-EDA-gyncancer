@@ -1,5 +1,6 @@
 # Modul imports
 import dash
+import newrelic.agent
 import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
@@ -22,6 +23,7 @@ from dataframes import joined_months_unit_agg as jmuagg
 from dataframes import joined_months_div_agg as jmdagg
 
 
+newrelic.agent.initialize('./newrelic.ini')
 external_stylesheets = [dbc.themes.BOOTSTRAP]
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
